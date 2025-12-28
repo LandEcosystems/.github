@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 
 const OWNER = "LandEcosystems";
+const GRAPHQL_URL = "https://api.github.com/graphql";
 
 // Keep this focused: we compute "org contributors" as contributors to these key repos.
 const REPOS = [
@@ -34,6 +35,94 @@ async function gh(path) {
     throw new Error(`GitHub API ${res.status} for ${path}\n${body}`);
   }
   return res;
+}
+
+function replaceBetweenMarkers(readme, start, end, replacement) {
+  const startIdx = readme.indexOf(start);
+  const endIdx = readme.indexOf(end);
+  if (startIdx === -1 || endIdx === -1 || endIdx < startIdx) {
+    throw new Error(`Markers not found: ${start} / ${end}`);
+  }
+  const before = readme.slice(0, startIdx + start.length);
+  const after = readme.slice(endIdx);
+  return `${before}\n\n${replacement}\n\n${after}`;
+}
+
+function repoLink(owner, repo) {
+  const label = mdEscape(`${owner}/${repo}`);
+  const url = `https://github.com/${owner}/${repo}`;
+  return `[\\\`${label}\\\`](${url})`;
+}
+
+async function graphql(query, variables) {
+  if (!token) {
+    throw new Error("GraphQL requests require GITHUB_TOKEN (needed to read pinned repositories).");
+  }
+
+  const res = await fetch(GRAPHQL_URL, {
+    method: "POST",
+    headers: {
+      Accept: "application/vnd.github+json",
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28",
+      "User-Agent": "LandEcosystems-org-profile",
+    },
+    body: JSON.stringify({ query, variables }),
+  });
+
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok || json.errors) {
+    throw new Error(`GitHub GraphQL error\n${JSON.stringify(json, null, 2)}`);
+  }
+  return json.data;
+}
+
+async function getPinnedRepos(limit = 6) {
+  const query = `
+    query($login: String!, $first: Int!) {
+      organization(login: $login) {
+        pinnedItems(first: $first, types: REPOSITORY) {
+          nodes {
+            ... on Repository {
+              name
+              url
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  const data = await graphql(query, { login: OWNER, first: limit });
+  const nodes = data?.organization?.pinnedItems?.nodes ?? [];
+  return nodes.filter(Boolean);
+}
+
+function buildFeaturedTable(repos) {
+  const cols = 3;
+  const cells = repos.slice(0, 6).map((r) => {
+    const name = r.name;
+    const url = r.url || `https://github.com/${OWNER}/${name}`;
+    const img = `https://opengraph.githubassets.com/1/${OWNER}/${name}`;
+    return `<a href="${url}"><img alt="${OWNER}/${name}" src="${img}" width="400" /></a>`;
+  });
+
+  const rows = [];
+  for (let i = 0; i < cells.length; i += cols) {
+    rows.push(cells.slice(i, i + cols));
+  }
+
+  const html = [
+    "<table>",
+    ...rows.map((row) => {
+      const tds = row.map((c) => `    <td>\n      ${c}\n    </td>`).join("\n");
+      return `  <tr>\n${tds}\n  </tr>`;
+    }),
+    "</table>",
+  ].join("\n");
+
+  return html;
 }
 
 async function listContributors(repo) {
@@ -79,6 +168,20 @@ function buildTable(top) {
 async function main() {
   const byLogin = new Map(); // login -> {login, html_url, avatar_url, contributions}
 
+  const readmePath = new URL("../profile/README.md", import.meta.url);
+  let readme = await fs.readFile(readmePath, "utf8");
+
+  // Featured repositories: prefer org pinned repos (via GraphQL); fall back to REPOS.
+  const featuredStart = "<!-- FEATURED:START -->";
+  const featuredEnd = "<!-- FEATURED:END -->";
+  let featuredRepos = [];
+  try {
+    featuredRepos = await getPinnedRepos(6);
+  } catch {
+    featuredRepos = REPOS.map((name) => ({ name, url: `https://github.com/${OWNER}/${name}` })).slice(0, 6);
+  }
+  readme = replaceBetweenMarkers(readme, featuredStart, featuredEnd, buildFeaturedTable(featuredRepos));
+
   for (const repo of REPOS) {
     const contributors = await listContributors(repo);
     for (const c of contributors) {
@@ -102,29 +205,18 @@ async function main() {
     .sort((a, b) => b.contributions - a.contributions)
     .slice(0, 32);
 
+  const start = "<!-- CONTRIBUTORS:START -->";
+  const end = "<!-- CONTRIBUTORS:END -->";
   const block = [
-    `Updated from: ${REPOS.map((r) => `\`${OWNER}/${r}\``).join(", ")}`,
+    `Updated from: ${REPOS.map((r) => repoLink(OWNER, r)).join(", ")}`,
     "",
     buildTable(top),
   ].join("\n");
 
-  const readmePath = new URL("../profile/README.md", import.meta.url);
-  const readme = await fs.readFile(readmePath, "utf8");
-
-  const start = "<!-- CONTRIBUTORS:START -->";
-  const end = "<!-- CONTRIBUTORS:END -->";
-  const startIdx = readme.indexOf(start);
-  const endIdx = readme.indexOf(end);
-  if (startIdx === -1 || endIdx === -1 || endIdx < startIdx) {
-    throw new Error("Contributors markers not found in profile/README.md");
-  }
-
-  const before = readme.slice(0, startIdx + start.length);
-  const after = readme.slice(endIdx);
-  const next = `${before}\n\n${block}\n\n${after}`;
+  const next = replaceBetweenMarkers(readme, start, end, block);
 
   await fs.writeFile(readmePath, next, "utf8");
-  console.log("Updated profile/README.md contributors section.");
+  console.log("Updated profile/README.md featured + contributors sections.");
 }
 
 main().catch((e) => {
