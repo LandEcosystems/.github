@@ -3,7 +3,14 @@ import fs from "node:fs/promises";
 const OWNER = "LandEcosystems";
 
 // Keep this focused: we compute "org contributors" as contributors to these key repos.
-const REPOS = ["Sindbad", "Sindbad-Tutorials", "TimeSamplers.jl", "ErrorMetrics.jl"];
+const REPOS = [
+  "Sindbad",
+  "Sindbad-Tutorials",
+  "SindbadDataExtractor",
+  "TimeSamplers.jl",
+  "ErrorMetrics.jl",
+  "OmniTools.jl",
+];
 
 const token = process.env.GITHUB_TOKEN; // optional (unauthenticated GitHub API works, but is rate-limited)
 
