@@ -10,7 +10,8 @@ LandEcosystems is an organization focused on land, ecosystem, and land-surface p
       <a href="https://github.com/LandEcosystems/Sindbad">
         <img
           alt="LandEcosystems/Sindbad"
-          src="https://github-readme-stats.vercel.app/api/pin/?username=LandEcosystems&repo=Sindbad&show_owner=true"
+          src="https://opengraph.githubassets.com/1/LandEcosystems/Sindbad"
+          width="400"
         />
       </a>
     </td>
@@ -18,7 +19,8 @@ LandEcosystems is an organization focused on land, ecosystem, and land-surface p
       <a href="https://github.com/LandEcosystems/Sindbad-Tutorials">
         <img
           alt="LandEcosystems/Sindbad-Tutorials"
-          src="https://github-readme-stats.vercel.app/api/pin/?username=LandEcosystems&repo=Sindbad-Tutorials&show_owner=true"
+          src="https://opengraph.githubassets.com/1/LandEcosystems/Sindbad-Tutorials"
+          width="400"
         />
       </a>
     </td>
@@ -28,7 +30,8 @@ LandEcosystems is an organization focused on land, ecosystem, and land-surface p
       <a href="https://github.com/LandEcosystems/TimeSamplers.jl">
         <img
           alt="LandEcosystems/TimeSamplers.jl"
-          src="https://github-readme-stats.vercel.app/api/pin/?username=LandEcosystems&repo=TimeSamplers.jl&show_owner=true"
+          src="https://opengraph.githubassets.com/1/LandEcosystems/TimeSamplers.jl"
+          width="400"
         />
       </a>
     </td>
@@ -36,7 +39,8 @@ LandEcosystems is an organization focused on land, ecosystem, and land-surface p
       <a href="https://github.com/LandEcosystems/ErrorMetrics.jl">
         <img
           alt="LandEcosystems/ErrorMetrics.jl"
-          src="https://github-readme-stats.vercel.app/api/pin/?username=LandEcosystems&repo=ErrorMetrics.jl&show_owner=true"
+          src="https://opengraph.githubassets.com/1/LandEcosystems/ErrorMetrics.jl"
+          width="400"
         />
       </a>
     </td>
