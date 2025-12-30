@@ -99,6 +99,17 @@ async function getPinnedRepos(limit = 6) {
   return nodes.filter(Boolean);
 }
 
+async function getRecentlyUpdatedRepos(limit = 6) {
+  // Returns public repos (excluding .github), sorted by recently updated.
+  const res = await gh(`/orgs/${OWNER}/repos?per_page=100&type=public&sort=updated`);
+  const repos = await res.json();
+  if (!Array.isArray(repos)) return [];
+  return repos
+    .filter((r) => r?.name && r.name !== ".github")
+    .slice(0, limit)
+    .map((r) => ({ name: r.name, url: r.html_url }));
+}
+
 function buildFeaturedTable(repos) {
   const cols = 3;
   const cells = repos.slice(0, 6).map((r) => {
@@ -177,7 +188,17 @@ async function main() {
   let featuredRepos = [];
   try {
     featuredRepos = await getPinnedRepos(6);
-  } catch {
+  } catch {}
+
+  // If org has no pins (or GraphQL failed), fall back to recently-updated repos.
+  if (featuredRepos.length === 0) {
+    try {
+      featuredRepos = await getRecentlyUpdatedRepos(6);
+    } catch {}
+  }
+
+  // Final fallback: the configured list.
+  if (featuredRepos.length === 0) {
     featuredRepos = REPOS.map((name) => ({ name, url: `https://github.com/${OWNER}/${name}` })).slice(0, 6);
   }
   readme = replaceBetweenMarkers(readme, featuredStart, featuredEnd, buildFeaturedTable(featuredRepos));
