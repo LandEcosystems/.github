@@ -9,7 +9,7 @@ LandEcosystems is a github organization focused on providing tools, methods and 
 <table>
   <tr>
     <td>
-      <a href="https://github.com/LandEcosystems/Sindbad"><img alt="LandEcosystems/Sindbad" src="https://opengraph.githubassets.com/1/LandEcosystems/Sindbad" width="400" /></a>
+      <a href="https://github.com/LandEcosystems/Sindbad.jl"><img alt="LandEcosystems/Sindbad.jl" src="https://opengraph.githubassets.com/1/LandEcosystems/Sindbad.jl" width="400" /></a>
     </td>
     <td>
       <a href="https://github.com/LandEcosystems/TimeSamplers.jl"><img alt="LandEcosystems/TimeSamplers.jl" src="https://opengraph.githubassets.com/1/LandEcosystems/TimeSamplers.jl" width="400" /></a>
