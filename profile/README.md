@@ -9,18 +9,18 @@ LandEcosystems is a github organization focused on providing tools, methods and 
 <table>
   <tr>
     <td>
+      <a href="https://github.com/LandEcosystems/SindbadAnywhere"><img alt="LandEcosystems/SindbadAnywhere" src="https://opengraph.githubassets.com/1/LandEcosystems/SindbadAnywhere" width="400" /></a>
+    </td>
+    <td>
       <a href="https://github.com/LandEcosystems/SindbadTutorials.jl"><img alt="LandEcosystems/SindbadTutorials.jl" src="https://opengraph.githubassets.com/1/LandEcosystems/SindbadTutorials.jl" width="400" /></a>
     </td>
     <td>
       <a href="https://github.com/LandEcosystems/Sindbad.jl"><img alt="LandEcosystems/Sindbad.jl" src="https://opengraph.githubassets.com/1/LandEcosystems/Sindbad.jl" width="400" /></a>
     </td>
-    <td>
-      <a href="https://github.com/LandEcosystems/OmniTools.jl"><img alt="LandEcosystems/OmniTools.jl" src="https://opengraph.githubassets.com/1/LandEcosystems/OmniTools.jl" width="400" /></a>
-    </td>
   </tr>
   <tr>
     <td>
-      <a href="https://github.com/LandEcosystems/SindbadAnywhere"><img alt="LandEcosystems/SindbadAnywhere" src="https://opengraph.githubassets.com/1/LandEcosystems/SindbadAnywhere" width="400" /></a>
+      <a href="https://github.com/LandEcosystems/OmniTools.jl"><img alt="LandEcosystems/OmniTools.jl" src="https://opengraph.githubassets.com/1/LandEcosystems/OmniTools.jl" width="400" /></a>
     </td>
     <td>
       <a href="https://github.com/LandEcosystems/Sindbad-Experiment-Template"><img alt="LandEcosystems/Sindbad-Experiment-Template" src="https://opengraph.githubassets.com/1/LandEcosystems/Sindbad-Experiment-Template" width="400" /></a>
